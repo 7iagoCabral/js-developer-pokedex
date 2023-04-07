@@ -2,19 +2,26 @@ const pokemonList = document.getElementById('pokemonList')
 const pokemonElement = document.getElementById('pokemon')
 const loadMoreButton = document.getElementById('loadMoreButton')
 
-console.log(window.location.href)
 window.addEventListener('hashchange', () => {
+    console.log(window.location.href)
+    if(window.location.hash.substring(1) == undefined || window.location.hash.substring(1) == 0){
+        pokemonList.style = ''
+        loadMoreButton.style.display = 'block'
+        pokemonElement.style.display = 'none'
+        return
+    }
+
     let pokemonId = window.location.hash.substring(1)
     fetch('https://pokeapi.co/api/v2/pokemon/'+ pokemonId)
     .then(res => res.json())
     .then(pokemon => {
-        console.log(pokemon)
         pokemonList.style.display = 'none'
         loadMoreButton.style.display = 'none'
+        pokemonElement.style.display = ''
         pokemonElement.innerHTML = loadPokemonDetail({
             name: pokemon.name, 
             number: pokemon.id,
-            type: pokemon.types[0].type.name,
+            type: pokemon?.types[0]?.type.name,
             photo: pokemon.sprites.other.dream_world.front_default,
             detail: {
                 weight: pokemon.weight,
@@ -80,6 +87,16 @@ loadMoreButton.addEventListener('click', () => {
 })
 
 function loadPokemonDetail(pokemon) {
+    const statusColor = {
+        'hp': 'green',
+        'attack': 'red',
+        'defense': 'brown',
+        'special-attack': 'orange',
+        'special-defense': 'yellow',
+        'speed': 'blue'
+
+    }
+
     return `
     <div class="pokemon-detail ghost">
     <div class="container-title">
@@ -93,10 +110,19 @@ function loadPokemonDetail(pokemon) {
     <img src="${pokemon.photo}" alt="" class="pokemon-photo" />
 
     <div class="content-detail">
-     <p>species: ${pokemon.detail.species}</p>
-     <p>weight: ${pokemon.detail.weight}</p>
-     ${pokemon.detail.stats.map(status => `<p>${status.stat.name}: ${status.base_stat}</p>`
-     ).join('')}
+    <div class="infos">
+        <span class="tag">species: ${pokemon.detail.species}</span>
+        <span class="tag">weight: ${pokemon.detail.weight}</span>
+        <span class="tag">type: ${pokemon.type}</span>
+     </div>
+     <div>
+        ${pokemon.detail.stats.map(status => `
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <div style="width: 160px;">${status.stat.name}  </div> <div style="width: 40px; text-align: center;">${status.base_stat}</div>
+                <div class="status" style="background: linear-gradient(to right, ${statusColor[status.stat.name]} 0% ${(status.base_stat*100)/255}%, #c7c7c7 ${(status.base_stat*100)/255}%);"></div>
+            </div>`
+        ).join('')}
+        </div>
     </div>
     
     </div>
