@@ -146,6 +146,36 @@
     border-radius: 1rem;
 }
 
+.pokemon-detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.container-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+
+}
+.pokemon-photo {
+    height: 280px;
+    z-index: 1;
+}
+
+.content-detail {
+    margin-top: -50px;
+    background-color: #fff;
+    border-radius: 40px 40px 0 0;
+    padding: 80px 10px 20px;
+
+}
+
+
+
 @media screen and (min-width: 380px) {
     .pokemons {
         grid-template-columns: 1fr 1fr;
